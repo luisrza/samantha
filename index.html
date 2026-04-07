@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dra. Samantha Andrade | Oftalmología Especializada en Monterrey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --teal-deep: #0B3B3C;
+  --teal: #1A6B6D;
+  --teal-light: #2A9D8F;
+  --gold: #C8A96E;
+  --gold-light: #E4D5B7;
+  --cream: #FAF7F2;
+  --white: #FFFFFF;
+  --gray-100: #F5F3EF;
+  --gray-200: #E8E4DD;
+  --gray-400: #A09A90;
+  --gray-600: #6B6560;
+  --gray-800: #3A3530;
+  --text: #2C2825;
+  --shadow-sm: 0 2px 8px rgba(11,59,60,0.06);
+  --shadow-md: 0 8px 30px rgba(11,59,60,0.10);
+  --shadow-lg: 0 20px 60px rgba(11,59,60,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: var(--cream);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* ═══════════════ UTILITY ═══════════════ */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section-pad { padding: 100px 0; }
+.text-center { text-align: center; }
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--teal-light);
+  margin-bottom: 16px;
+}
+.section-label::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--teal-deep);
+  margin-bottom: 20px;
+}
+
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--gray-600);
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  border: none;
+  border-radius: 60px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--teal);
+  color: var(--white);
+  box-shadow: 0 4px 20px rgba(26,107,109,0.3);
+}
+.btn-primary:hover {
+  background: var(--teal-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(26,107,109,0.4);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--teal);
+  border: 2px solid var(--teal);
+}
+.btn-outline:hover {
+  background: var(--teal);
+  color: var(--white);
+}
+.btn-gold {
+  background: var(--gold);
+  color: var(--white);
+}
+.btn-gold:hover {
+  background: #b8994e;
+  transform: translateY(-2px);
+}
+
+/* ═══════════════ ANIMATIONS ═══════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes floatSoft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════ NAVIGATION ═══════════════ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 18px 0;
+  transition: var(--transition);
+}
+.nav.scrolled {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-sm);
+  padding: 12px 0;
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--teal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-logo-icon svg { width: 24px; height: 24px; }
+.nav-logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--teal-deep);
+}
+.nav-logo-text span { display: block; font-size: 0.65rem; font-family: 'DM Sans', sans-serif; font-weight: 400; color: var(--gray-600); letter-spacing: 1px; text-transform: uppercase; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: var(--transition);
+  position: relative;
+}
+.nav-links a:hover { color: var(--teal); }
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gold);
+  transition: var(--transition);
+}
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  padding: 10px 24px !important;
+  font-size: 0.85rem !important;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-toggle span {
+  width: 24px;
+  height: 2px;
+  background: var(--teal-deep);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+/* ═══════════════ HERO ═══════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--cream) 0%, #EDF5F0 50%, #E6EFEF 100%);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(26,107,109,0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatSoft 8s ease-in-out infinite;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  left: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(200,169,110,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatSoft 6s ease-in-out infinite 2s;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.hero-content { animation: fadeUp 1s ease forwards; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(26,107,109,0.08);
+  border-radius: 40px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--teal);
+  margin-bottom: 24px;
+}
+.hero-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--teal-light);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  color: var(--teal-deep);
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--teal);
+  position: relative;
+}
+.hero h1 em::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: var(--gold-light);
+  opacity: 0.5;
+  z-index: -1;
+  border-radius: 4px;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: var(--gray-600);
+  line-height: 1.8;
+  max-width: 480px;
+  margin-bottom: 36px;
+}
+
+.hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.hero-visual {
+  position: relative;
+  animation: scaleIn 1s ease 0.3s forwards;
+  opacity: 0;
+}
+.hero-img-wrapper {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.hero-img-wrapper img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  display: block;
+}
+.hero-float-card {
+  position: absolute;
+  bottom: -20px;
+  left: -30px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  animation: floatSoft 5s ease-in-out infinite 1s;
+}
+.hero-float-card .icon-circle {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.hero-float-card .hfc-text strong { display: block; font-size: 0.95rem; color: var(--teal-deep); }
+.hero-float-card .hfc-text span { font-size: 0.8rem; color: var(--gray-400); }
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--gray-200);
+}
+.hero-stat strong {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--teal);
+}
+.hero-stat span {
+  font-size: 0.82rem;
+  color: var(--gray-400);
+}
+
+/* ═══════════════ SERVICES ═══════════════ */
+.services { background: var(--white); }
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 50px;
+}
+.service-card {
+  padding: 40px 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--gold));
+  opacity: 0;
+  transition: var(--transition);
+}
+.service-card:hover {
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-6px);
+}
+.service-card:hover::before { opacity: 1; }
+
+.service-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-size: 1.8rem;
+}
+.service-card:nth-child(1) .service-icon { background: rgba(26,107,109,0.08); }
+.service-card:nth-child(2) .service-icon { background: rgba(200,169,110,0.12); }
+.service-card:nth-child(3) .service-icon { background: rgba(42,157,143,0.08); }
+
+.service-card h3 {
+  font-size: 1.3rem;
+  color: var(--teal-deep);
+  margin-bottom: 12px;
+}
+.service-card p {
+  font-size: 0.92rem;
+  color: var(--gray-600);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.service-card .service-features {
+  list-style: none;
+  padding: 0;
+}
+.service-card .service-features li {
+  padding: 6px 0;
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.service-card .service-features li::before {
+  content: '✓';
+  color: var(--teal-light);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+/* ═══════════════ VISION SLIDER ═══════════════ */
+.vision-section {
+  background: var(--teal-deep);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.vision-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");
+}
+.vision-section .section-label { color: var(--gold-light); }
+.vision-section .section-title { color: var(--white); }
+.vision-section .section-sub { color: rgba(255,255,255,0.6); }
+
+.vision-slider-container {
+  max-width: 800px;
+  margin: 50px auto 0;
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  cursor: col-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.vision-slider-wrapper {
+  position: relative;
+  width: 100%;
+  height: 450px;
+}
+
+.vision-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vision-img-normal { z-index: 1; }
+.vision-img-blur {
+  z-index: 2;
+  filter: blur(4px) contrast(0.85);
+  clip-path: inset(0 0 0 50%);
+}
+
+.vision-slider-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  background: var(--white);
+  z-index: 10;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.vision-slider-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  background: var(--white);
+  border-radius: 50%;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  pointer-events: none;
+  transition: transform 0.15s ease;
+}
+.vision-slider-handle svg {
+  width: 24px;
+  height: 24px;
+  color: var(--teal);
+}
+
+.vision-label {
+  position: absolute;
+  top: 20px;
+  z-index: 5;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.vision-label-normal {
+  left: 20px;
+  background: rgba(42,157,143,0.9);
+  color: var(--white);
+}
+.vision-label-astig {
+  right: 20px;
+  background: rgba(200,169,110,0.9);
+  color: var(--white);
+}
+
+.vision-instruction {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ═══════════════ ABOUT ═══════════════ */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: center;
+}
+.about-img-wrapper {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.about-img-wrapper img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  display: block;
+}
+.about-img-accent {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  width: 100px;
+  height: 100px;
+  border: 3px solid var(--gold);
+  border-radius: 20px 0 0 0;
+  opacity: 0.4;
+}
+.about-content .section-sub { max-width: none; margin-bottom: 28px; }
+
+.about-credentials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 28px;
+}
+.about-cred {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--gray-100);
+  border-radius: var(--radius-sm);
+}
+.about-cred .cred-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--teal);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+  font-size: 1rem;
+}
+.about-cred span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+/* ═══════════════ QUESTIONNAIRE ═══════════════ */
+.questionnaire-section {
+  background: linear-gradient(180deg, var(--white) 0%, var(--cream) 100%);
+}
+
+.questionnaire-wrapper {
+  max-width: 720px;
+  margin: 50px auto 0;
+  background: var(--white);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+}
+
+.q-progress {
+  display: flex;
+  padding: 0;
+  list-style: none;
+  background: var(--gray-100);
+}
+.q-progress li {
+  flex: 1;
+  text-align: center;
+  padding: 16px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  position: relative;
+  transition: var(--transition);
+  letter-spacing: 0.5px;
+}
+.q-progress li.active {
+  color: var(--teal);
+  background: rgba(26,107,109,0.05);
+}
+.q-progress li.completed {
+  color: var(--teal-light);
+}
+.q-progress li::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--gray-200);
+  transition: var(--transition);
+}
+.q-progress li.active::after,
+.q-progress li.completed::after {
+  background: linear-gradient(90deg, var(--teal), var(--teal-light));
+}
+
+.q-step {
+  display: none;
+  padding: 40px;
+  animation: fadeUp 0.5s ease forwards;
+}
+.q-step.active { display: block; }
+
+.q-step h3 {
+  font-size: 1.4rem;
+  color: var(--teal-deep);
+  margin-bottom: 8px;
+}
+.q-step > p {
+  font-size: 0.9rem;
+  color: var(--gray-400);
+  margin-bottom: 30px;
+}
+
+.q-field {
+  margin-bottom: 22px;
+}
+.q-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 8px;
+}
+.q-field input,
+.q-field select,
+.q-field textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--gray-100);
+  transition: var(--transition);
+  outline: none;
+}
+.q-field input:focus,
+.q-field select:focus,
+.q-field textarea:focus {
+  border-color: var(--teal);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(26,107,109,0.08);
+}
+.q-field textarea { resize: vertical; min-height: 100px; }
+
+.q-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.q-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.q-option {
+  position: relative;
+}
+.q-option input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.q-option label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+  font-size: 0.88rem;
+}
+.q-option label::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--gray-200);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.q-option input:checked + label {
+  border-color: var(--teal);
+  background: rgba(26,107,109,0.04);
+  color: var(--teal);
+}
+.q-option input:checked + label::before {
+  border-color: var(--teal);
+  background: var(--teal);
+  box-shadow: inset 0 0 0 3px var(--white);
+}
+
+.q-checkbox label::before {
+  border-radius: 4px;
+}
+.q-checkbox input:checked + label::before {
+  border-radius: 4px;
+}
+
+.q-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-200);
+}
+.q-nav .btn { padding: 12px 28px; font-size: 0.88rem; }
+.q-back { background: none; border: none; color: var(--gray-400); font-family: 'DM Sans'; font-size: 0.88rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: var(--transition); }
+.q-back:hover { color: var(--teal); }
+
+.q-step-indicator {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+}
+
+/* questionnaire success */
+.q-success {
+  display: none;
+  text-align: center;
+  padding: 60px 40px;
+}
+.q-success.active { display: block; }
+.q-success-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-light));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 2rem;
+  color: white;
+  animation: scaleIn 0.5s ease forwards;
+}
+.q-success h3 { font-size: 1.6rem; color: var(--teal-deep); margin-bottom: 12px; }
+.q-success p { color: var(--gray-600); max-width: 400px; margin: 0 auto; }
+
+/* ═══════════════ TESTIMONIALS ═══════════════ */
+.testimonials { background: var(--white); }
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 50px;
+}
+.testimonial-card {
+  padding: 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+}
+.testimonial-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.testimonial-stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  color: var(--gold);
+  font-size: 0.9rem;
+}
+.testimonial-card blockquote {
+  font-size: 0.92rem;
+  color: var(--gray-600);
+  line-height: 1.7;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.testimonial-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--teal);
+}
+.testimonial-author-info strong { display: block; font-size: 0.88rem; color: var(--teal-deep); }
+.testimonial-author-info span { font-size: 0.78rem; color: var(--gray-400); }
+
+/* ═══════════════ LOCATION ═══════════════ */
+.location-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 50px;
+}
+.location-map {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--gray-200);
+  height: 400px;
+}
+.location-map iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.location-info { display: flex; flex-direction: column; justify-content: center; }
+.location-item {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--gray-200);
+}
+.location-item:last-child { border-bottom: none; }
+.location-item-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(26,107,109,0.08);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+.location-item-text strong { display: block; font-size: 0.9rem; color: var(--teal-deep); margin-bottom: 4px; }
+.location-item-text span { font-size: 0.85rem; color: var(--gray-600); line-height: 1.5; }
+
+/* ═══════════════ CTA ═══════════════ */
+.cta-section {
+  background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal) 100%);
+  color: var(--white);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='1.5' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+}
+.cta-section .section-title { color: var(--white); }
+.cta-section p { color: rgba(255,255,255,0.65); max-width: 500px; margin: 0 auto 36px; font-size: 1.05rem; }
+.cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* ═══════════════ FOOTER ═══════════════ */
+.footer {
+  background: var(--gray-800);
+  color: rgba(255,255,255,0.5);
+  padding: 50px 0 30px;
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.8);
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+.footer-links a {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: var(--transition);
+}
+.footer-links a:hover { color: var(--gold); }
+.footer-copy { width: 100%; text-align: center; padding-top: 24px; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.8rem; }
+
+/* ═══════════════ MOBILE MENU ═══════════════ */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(20px);
+  z-index: 999;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--teal-deep);
+  text-decoration: none;
+  transition: var(--transition);
+}
+.mobile-menu a:hover { color: var(--teal); }
+.mobile-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--teal-deep);
+  cursor: pointer;
+}
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: center; }
+  .hero p { margin-left: auto; margin-right: auto; }
+  .hero-btns { justify-content: center; }
+  .hero-visual { max-width: 500px; margin: 0 auto; }
+  .hero-stats { justify-content: center; }
+  .hero-float-card { left: auto; right: -10px; }
+  .services-grid { grid-template-columns: 1fr 1fr; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-img-wrapper img { height: 380px; }
+  .testimonials-grid { grid-template-columns: 1fr 1fr; }
+  .location-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .section-pad { padding: 70px 0; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  .hero { min-height: auto; padding: 120px 0 60px; }
+  .hero-stats { gap: 24px; }
+  .services-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .testimonials-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .q-options { grid-template-columns: 1fr; }
+  .q-field-row { grid-template-columns: 1fr; }
+  .q-step { padding: 28px 20px; }
+  .q-progress li { font-size: 0.65rem; padding: 12px 4px; }
+  .vision-slider-wrapper { height: 300px; }
+  .about-credentials { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2rem; }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .hero-float-card { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
+      </div>
+      <div class="nav-logo-text">Dra. Samantha Andrade<span>Oftalmología Especializada</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#vision">Tu Visión</a></li>
+      <li><a href="#doctora">Doctora</a></li>
+      <li><a href="#cuestionario">Pre-Consulta</a></li>
+      <li><a href="#testimonios">Testimonios</a></li>
+      <li><a href="#ubicacion">Ubicación</a></li>
+      <li><a href="#cuestionario" class="btn btn-primary nav-cta">Agendar Cita</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">&times;</button>
+  <a href="#servicios" onclick="closeMobile()">Servicios</a>
+  <a href="#vision" onclick="closeMobile()">Tu Visión</a>
+  <a href="#doctora" onclick="closeMobile()">Doctora</a>
+  <a href="#cuestionario" onclick="closeMobile()">Pre-Consulta</a>
+  <a href="#testimonios" onclick="closeMobile()">Testimonios</a>
+  <a href="#ubicacion" onclick="closeMobile()">Ubicación</a>
+  <a href="#cuestionario" class="btn btn-primary" onclick="closeMobile()">Agendar Cita</a>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="inicio">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge">San Pedro Garza García, N.L.</div>
+        <h1>Recupera la <em>claridad</em> de tu visión</h1>
+        <p>Especialista en cirugía ocular, cataratas y procedimientos láser. Alta especialidad en cirugía de catarata y segmento anterior. Primera consulta desde $1,200 MXN.</p>
+        <div class="hero-btns">
+          <a href="#cuestionario" class="btn btn-primary">
+            Agendar Consulta
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#vision" class="btn btn-outline">Ver Simulación</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong>$1,200</strong><span>Primera consulta</span></div>
+          <div class="hero-stat"><strong>UANL</strong><span>Medicina General</span></div>
+          <div class="hero-stat"><strong>98%</strong><span>Satisfacción</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-img-wrapper">
+          <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=500&fit=crop&crop=center" alt="Consultorio oftalmológico moderno" />
+        </div>
+        <div class="hero-float-card">
+          <div class="icon-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="hfc-text">
+            <strong>Alta Especialidad</strong>
+            <span>Cirugía de Catarata</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SERVICES ═══════════════ -->
+<section class="services section-pad" id="servicios">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">Especialidades</div>
+      <h2 class="section-title">Servicios Oftalmológicos</h2>
+      <p class="section-sub" style="margin: 0 auto;">Tratamientos especializados con la tecnología más avanzada para cuidar y mejorar tu visión.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">🔬</div>
+        <h3>Cirugía de Cataratas</h3>
+        <p>Procedimiento ambulatorio mínimamente invasivo para reemplazar el cristalino opaco por un lente intraocular de alta definición.</p>
+        <ul class="service-features">
+          <li>Facoemulsificación de última generación</li>
+          <li>Lentes intraoculares multifocales</li>
+          <li>Recuperación en 24-48 horas</li>
+          <li>Sin hospitalización</li>
+        </ul>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">✨</div>
+        <h3>Cirugía LASIK</h3>
+        <p>Corrección láser permanente para miopía, hipermetropía y astigmatismo. Procedimiento rápido e indoloro.</p>
+        <ul class="service-features">
+          <li>Láser excímer de precisión</li>
+          <li>Resultados desde el primer día</li>
+          <li>Procedimiento de 15 minutos</li>
+          <li>Libre de lentes para siempre</li>
+        </ul>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">👁️</div>
+        <h3>Diagnóstico y Más</h3>
+        <p>Evaluación integral de astigmatismo, retinopatía diabética, conjuntivitis granular y cataratas congénitas con tecnología de punta.</p>
+        <ul class="service-features">
+          <li>Topografía corneal computarizada</li>
+          <li>Retinopatía diabética</li>
+          <li>Cataratas congénitas</li>
+          <li>Plan de tratamiento personalizado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ VISION SLIDER ═══════════════ -->
+<section class="vision-section section-pad" id="vision">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">Simulación Visual</div>
+      <h2 class="section-title">¿Cómo Ve una Persona con Astigmatismo?</h2>
+      <p class="section-sub" style="margin: 0 auto;">Desliza la barra para comparar la visión normal contra la visión con astigmatismo. Así es como ven millones de personas en su día a día.</p>
+    </div>
+    <div class="vision-slider-container reveal" id="visionSlider">
+      <div class="vision-slider-wrapper">
+        <img class="vision-img vision-img-normal" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=450&fit=crop" alt="Visión normal" />
+        <img class="vision-img vision-img-blur" id="blurImg" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=450&fit=crop" alt="Visión con astigmatismo" />
+        <div class="vision-label vision-label-normal">Visión Normal</div>
+        <div class="vision-label vision-label-astig">Con Astigmatismo</div>
+        <div class="vision-slider-line" id="sliderLine"></div>
+        <div class="vision-slider-handle" id="sliderHandle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M8 5l-5 7 5 7"/><path d="M16 5l5 7-5 7"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="vision-instruction">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      Arrastra la barra hacia los lados para comparar
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<section class="section-pad" id="doctora">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrapper reveal">
+        <div class="about-img-accent"></div>
+        <img src="samantha-foto.jpg" alt="Dra. Samantha Andrade Leal" />
+      </div>
+      <div class="about-content reveal">
+        <div class="section-label">Conoce a tu Doctora</div>
+        <h2 class="section-title">Dra. Samantha Estefanía Andrade Leal</h2>
+        <p class="section-sub">Oftalmóloga especializada en cirugía ocular, cataratas y procedimientos láser. Egresada de la UANL en Medicina General, con alta especialidad en cirugía de catarata y segmento anterior.</p>
+        <p class="section-sub">Mi compromiso es brindarte una atención cálida, honesta y de la más alta calidad. Cada par de ojos es único y merece un tratamiento personalizado con la mejor tecnología disponible. Sígueme en redes para tips de salud visual post-cirugía.</p>
+        <div class="about-credentials">
+          <div class="about-cred">
+            <div class="cred-icon">🎓</div>
+            <span>Egresada UANL — Medicina General</span>
+          </div>
+          <div class="about-cred">
+            <div class="cred-icon">🏅</div>
+            <span>Alta Especialidad en Cirugía de Catarata</span>
+          </div>
+          <div class="about-cred">
+            <div class="cred-icon">🔬</div>
+            <span>Cirugía de Segmento Anterior y Refractiva</span>
+          </div>
+          <div class="about-cred">
+            <div class="cred-icon">📱</div>
+            <span>@dra.samantha.andrade en Instagram</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ QUESTIONNAIRE ═══════════════ -->
+<section class="questionnaire-section section-pad" id="cuestionario">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">Pre-Consulta</div>
+      <h2 class="section-title">Cuestionario Previo a tu Cita</h2>
+      <p class="section-sub" style="margin: 0 auto;">Completa este breve cuestionario para que la Dra. Andrade tenga un panorama de tu salud visual antes de la consulta.</p>
+    </div>
+    <div class="questionnaire-wrapper reveal" id="questionnaire">
+      <ul class="q-progress" id="qProgress">
+        <li class="active">1. Datos</li>
+        <li>2. Síntomas</li>
+        <li>3. Historial</li>
+        <li>4. Estilo de Vida</li>
+        <li>5. Confirmar</li>
+      </ul>
+
+      <!-- STEP 1: Datos personales -->
+      <div class="q-step active" id="qStep1">
+        <h3>Datos Personales</h3>
+        <p>Información básica para tu expediente.</p>
+        <div class="q-field-row">
+          <div class="q-field">
+            <label>Nombre completo *</label>
+            <input type="text" id="qNombre" placeholder="Ej: María García López" required />
+          </div>
+          <div class="q-field">
+            <label>Edad *</label>
+            <input type="number" id="qEdad" placeholder="Ej: 35" min="1" max="120" required />
+          </div>
+        </div>
+        <div class="q-field-row">
+          <div class="q-field">
+            <label>Teléfono *</label>
+            <input type="tel" id="qTel" placeholder="Ej: 81 1234 5678" />
+          </div>
+          <div class="q-field">
+            <label>Correo electrónico</label>
+            <input type="email" id="qEmail" placeholder="correo@ejemplo.com" />
+          </div>
+        </div>
+        <div class="q-field">
+          <label>¿Es tu primera consulta oftalmológica?</label>
+          <div class="q-options">
+            <div class="q-option">
+              <input type="radio" name="primera" id="primera_si" value="si" />
+              <label for="primera_si">Sí, es mi primera vez</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="primera" id="primera_no" value="no" />
+              <label for="primera_no">No, ya he visitado a un oftalmólogo</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-nav">
+          <span></span>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <span class="q-step-indicator">Paso 1 de 5</span>
+            <button class="btn btn-primary" onclick="nextStep(2)">Siguiente →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Síntomas -->
+      <div class="q-step" id="qStep2">
+        <h3>Síntomas Visuales</h3>
+        <p>Cuéntanos qué problemas has experimentado.</p>
+        <div class="q-field">
+          <label>¿Cuál es el motivo principal de tu consulta?</label>
+          <div class="q-options">
+            <div class="q-option">
+              <input type="radio" name="motivo" id="motivo_cataratas" value="cataratas" />
+              <label for="motivo_cataratas">Posibles cataratas</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="motivo" id="motivo_lasik" value="lasik" />
+              <label for="motivo_lasik">Interés en LASIK</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="motivo" id="motivo_astig" value="astigmatismo" />
+              <label for="motivo_astig">Astigmatismo</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="motivo" id="motivo_otro" value="otro" />
+              <label for="motivo_otro">Otro / Revisión general</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-field">
+          <label>¿Cuáles de estos síntomas experimentas? (puedes seleccionar varios)</label>
+          <div class="q-options">
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="sint_borrosa" value="borrosa" />
+              <label for="sint_borrosa">Visión borrosa</label>
+            </div>
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="sint_nocturna" value="nocturna" />
+              <label for="sint_nocturna">Dificultad para ver de noche</label>
+            </div>
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="sint_halos" value="halos" />
+              <label for="sint_halos">Halos alrededor de luces</label>
+            </div>
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="sint_dolor" value="dolor" />
+              <label for="sint_dolor">Dolor de cabeza frecuente</label>
+            </div>
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="sint_fatiga" value="fatiga" />
+              <label for="sint_fatiga">Fatiga visual / ojos cansados</label>
+            </div>
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="sint_doble" value="doble" />
+              <label for="sint_doble">Visión doble</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-field">
+          <label>¿Desde cuándo experimentas estos síntomas?</label>
+          <select id="qDesde">
+            <option value="">Selecciona una opción</option>
+            <option value="semanas">Últimas semanas</option>
+            <option value="meses">Últimos meses</option>
+            <option value="6meses">Más de 6 meses</option>
+            <option value="año">Más de un año</option>
+            <option value="siempre">Desde que recuerdo</option>
+          </select>
+        </div>
+        <div class="q-nav">
+          <button class="q-back" onclick="prevStep(1)">← Anterior</button>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <span class="q-step-indicator">Paso 2 de 5</span>
+            <button class="btn btn-primary" onclick="nextStep(3)">Siguiente →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Historial -->
+      <div class="q-step" id="qStep3">
+        <h3>Historial Médico</h3>
+        <p>Esta información es importante para tu seguridad.</p>
+        <div class="q-field">
+          <label>¿Usas lentes actualmente?</label>
+          <div class="q-options">
+            <div class="q-option">
+              <input type="radio" name="lentes" id="lentes_armazon" value="armazon" />
+              <label for="lentes_armazon">Sí, de armazón</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="lentes" id="lentes_contacto" value="contacto" />
+              <label for="lentes_contacto">Sí, de contacto</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="lentes" id="lentes_ambos" value="ambos" />
+              <label for="lentes_ambos">Ambos tipos</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="lentes" id="lentes_no" value="no" />
+              <label for="lentes_no">No uso lentes</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-field">
+          <label>¿Tienes alguna de estas condiciones médicas?</label>
+          <div class="q-options">
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="cond_diabetes" value="diabetes" />
+              <label for="cond_diabetes">Diabetes</label>
+            </div>
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="cond_hipertension" value="hipertension" />
+              <label for="cond_hipertension">Hipertensión</label>
+            </div>
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="cond_tiroides" value="tiroides" />
+              <label for="cond_tiroides">Problemas de tiroides</label>
+            </div>
+            <div class="q-option q-checkbox">
+              <input type="checkbox" id="cond_ninguna" value="ninguna" />
+              <label for="cond_ninguna">Ninguna de las anteriores</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-field">
+          <label>¿Alguien en tu familia tiene o tuvo problemas oculares?</label>
+          <div class="q-options">
+            <div class="q-option">
+              <input type="radio" name="familia" id="fam_cat" value="cataratas" />
+              <label for="fam_cat">Sí, cataratas</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="familia" id="fam_glauc" value="glaucoma" />
+              <label for="fam_glauc">Sí, glaucoma</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="familia" id="fam_otro" value="otro" />
+              <label for="fam_otro">Sí, otro problema</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="familia" id="fam_no" value="no" />
+              <label for="fam_no">No / No lo sé</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-field">
+          <label>Medicamentos que tomas actualmente (si aplica)</label>
+          <textarea id="qMedicamentos" placeholder="Lista tus medicamentos actuales, o escribe 'Ninguno'"></textarea>
+        </div>
+        <div class="q-nav">
+          <button class="q-back" onclick="prevStep(2)">← Anterior</button>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <span class="q-step-indicator">Paso 3 de 5</span>
+            <button class="btn btn-primary" onclick="nextStep(4)">Siguiente →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Estilo de vida -->
+      <div class="q-step" id="qStep4">
+        <h3>Estilo de Vida</h3>
+        <p>Nos ayuda a personalizar tu tratamiento.</p>
+        <div class="q-field">
+          <label>¿Cuántas horas al día pasas frente a pantallas?</label>
+          <div class="q-options">
+            <div class="q-option">
+              <input type="radio" name="pantallas" id="pant_2" value="0-2" />
+              <label for="pant_2">Menos de 2 horas</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="pantallas" id="pant_5" value="2-5" />
+              <label for="pant_5">2 a 5 horas</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="pantallas" id="pant_8" value="5-8" />
+              <label for="pant_8">5 a 8 horas</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="pantallas" id="pant_mas" value="8+" />
+              <label for="pant_mas">Más de 8 horas</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-field">
+          <label>¿Realizas actividades deportivas o al aire libre?</label>
+          <div class="q-options">
+            <div class="q-option">
+              <input type="radio" name="deporte" id="dep_si" value="si" />
+              <label for="dep_si">Sí, regularmente</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="deporte" id="dep_poco" value="poco" />
+              <label for="dep_poco">Ocasionalmente</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="deporte" id="dep_no" value="no" />
+              <label for="dep_no">Rara vez o nunca</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-field">
+          <label>¿Cuál es tu ocupación principal?</label>
+          <input type="text" id="qOcupacion" placeholder="Ej: Ingeniera, contador, maestra..." />
+        </div>
+        <div class="q-field">
+          <label>¿Hay algo más que quieras que la doctora sepa?</label>
+          <textarea id="qNotas" placeholder="Cualquier detalle adicional sobre tu salud visual o preocupaciones..."></textarea>
+        </div>
+        <div class="q-nav">
+          <button class="q-back" onclick="prevStep(3)">← Anterior</button>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <span class="q-step-indicator">Paso 4 de 5</span>
+            <button class="btn btn-primary" onclick="nextStep(5)">Siguiente →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5: Confirmación -->
+      <div class="q-step" id="qStep5">
+        <h3>Confirma tu Información</h3>
+        <p>Revisa el resumen y selecciona tu horario preferido.</p>
+        <div id="qResumen" style="background:var(--gray-100);border-radius:var(--radius-sm);padding:24px;margin-bottom:24px;font-size:0.9rem;line-height:1.8;"></div>
+        <div class="q-field">
+          <label>¿Qué horario te conviene más para tu cita?</label>
+          <div class="q-options">
+            <div class="q-option">
+              <input type="radio" name="horario" id="hor_mañana" value="mañana" />
+              <label for="hor_mañana">Mañana (9am - 12pm)</label>
+            </div>
+            <div class="q-option">
+              <input type="radio" name="horario" id="hor_tarde" value="tarde" />
+              <label for="hor_tarde">Tarde (12pm - 5pm)</label>
+            </div>
+          </div>
+        </div>
+        <div class="q-field">
+          <label>Fecha preferida para la cita</label>
+          <input type="date" id="qFecha" />
+        </div>
+        <div class="q-nav">
+          <button class="q-back" onclick="prevStep(4)">← Anterior</button>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <span class="q-step-indicator">Paso 5 de 5</span>
+            <button class="btn btn-gold" onclick="submitQuestionnaire()">✓ Enviar Cuestionario</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="q-success" id="qSuccess">
+        <div class="q-success-icon">✓</div>
+        <h3>¡Cuestionario Enviado!</h3>
+        <p>Hemos recibido tu información. Nos pondremos en contacto contigo en las próximas 24 horas para confirmar tu cita. ¡Gracias!</p>
+        <!-- Aviso lentes de contacto -->
+        <div id="avisoLentes" style="display:none;margin-top:28px;background:linear-gradient(135deg,#FFF8EE,#FFF3E0);border:2px solid #C8A96E;border-radius:16px;padding:24px 28px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <span style="font-size:1.5rem;">⚠️</span>
+            <strong style="color:#0B3B3C;font-size:1.05rem;">Aviso Importante</strong>
+          </div>
+          <p style="color:#6B6560;font-size:0.92rem;line-height:1.7;margin:0;">
+            Si usas <strong>lentes de contacto</strong>, es indispensable que <strong>dejes de utilizarlos al menos 24 horas antes</strong> de tu consulta.
+            Esto permite que la córnea recupere su forma natural y garantiza que los resultados de tu evaluación sean precisos.
+            <br><br>
+            <em style="color:#8B7340;">Evita tener que reagendar tu cita — planea con anticipación.</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TESTIMONIALS ═══════════════ -->
+<section class="testimonials section-pad" id="testimonios">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">Testimonios</div>
+      <h2 class="section-title">Lo Que Dicen Nuestros Pacientes</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★ ★ ★ ★ ★</div>
+        <blockquote>"Tenía mucho miedo de operarme de cataratas, pero la Dra. Villarreal me explicó todo con mucha paciencia. Al día siguiente ya veía increíble. Cambió mi vida."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">RG</div>
+          <div class="testimonial-author-info">
+            <strong>Roberto Gutiérrez</strong>
+            <span>Cirugía de Cataratas, 2024</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★ ★ ★ ★ ★</div>
+        <blockquote>"Usé lentes por 20 años. Después del LASIK con la doctora, desperté viendo el reloj sin lentes. No lo podía creer. Una experiencia increíble de principio a fin."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">AM</div>
+          <div class="testimonial-author-info">
+            <strong>Ana María Treviño</strong>
+            <span>Cirugía LASIK, 2024</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★ ★ ★ ★ ★</div>
+        <blockquote>"El cuestionario previo me pareció genial. Cuando llegué a la consulta, la doctora ya sabía mi caso. Muy profesional y el consultorio está muy bonito."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">LP</div>
+          <div class="testimonial-author-info">
+            <strong>Laura Peña Soto</strong>
+            <span>Consulta de Astigmatismo, 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ LOCATION ═══════════════ -->
+<section class="section-pad" id="ubicacion">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">Ubicación</div>
+      <h2 class="section-title">Encuéntranos en San Pedro Garza García</h2>
+    </div>
+    <div class="location-grid">
+      <div class="location-map reveal">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3596.041!2d-100.3498!3d25.6510!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDM5JzAzLjYiTiAxMDDCsDIwJzU5LjMiVw!5e0!3m2!1ses!2smx!4v1" loading="lazy" allowfullscreen="" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="location-info reveal">
+        <div class="location-item">
+          <div class="location-item-icon">📍</div>
+          <div class="location-item-text">
+            <strong>Dirección</strong>
+            <span>Río de la Plata 100 Ote.<br>San Pedro Garza García, N.L.<br>(Zona Monterrey)</span>
+          </div>
+        </div>
+        <div class="location-item">
+          <div class="location-item-icon">📞</div>
+          <div class="location-item-text">
+            <strong>Teléfono</strong>
+            <span>+52 (81) 8888-5050<br>WhatsApp: +52 (81) 1234-5678</span>
+          </div>
+        </div>
+        <div class="location-item">
+          <div class="location-item-icon">🕐</div>
+          <div class="location-item-text">
+            <strong>Horario</strong>
+            <span>Lunes a Viernes: 9:00 AM - 6:00 PM<br>Sábados: 9:00 AM - 2:00 PM</span>
+          </div>
+        </div>
+        <div class="location-item">
+          <div class="location-item-icon">📱</div>
+          <div class="location-item-text">
+            <strong>Redes Sociales y Citas</strong>
+            <span>Instagram: @dra.samantha.andrade<br>Facebook: Dra.SamanthaAndradee<br>Citas en línea vía Doctoralia</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<section class="cta-section section-pad">
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="reveal">
+      <h2 class="section-title">¿Lista para ver el mundo con claridad?</h2>
+      <p>Agenda tu consulta de valoración y da el primer paso hacia una visión nítida y libre de lentes.</p>
+      <div class="cta-btns">
+        <a href="#cuestionario" class="btn btn-gold">Completar Pre-Consulta</a>
+        <a href="tel:+528188885050" class="btn btn-outline" style="border-color:rgba(255,255,255,0.3);color:white;">Llamar Ahora</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">Dra. Samantha Andrade · Oftalmología</div>
+      <ul class="footer-links">
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#doctora">Doctora</a></li>
+        <li><a href="#cuestionario">Pre-Consulta</a></li>
+        <li><a href="#ubicacion">Ubicación</a></li>
+      </ul>
+      <div class="footer-copy">© 2026 Dra. Samantha Estefanía Andrade Leal. Todos los derechos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════ NAV SCROLL ═══════════════ */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ═══════════════ MOBILE MENU ═══════════════ */
+const navToggle = document.getElementById('navToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileClose = document.getElementById('mobileClose');
+navToggle.addEventListener('click', () => mobileMenu.classList.add('open'));
+mobileClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+function closeMobile() { mobileMenu.classList.remove('open'); }
+
+/* ═══════════════ REVEAL ON SCROLL ═══════════════ */
+const reveals = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => revealObserver.observe(el));
+
+/* ═══════════════ VISION SLIDER ═══════════════ */
+const slider = document.getElementById('visionSlider');
+const blurImg = document.getElementById('blurImg');
+const sliderLine = document.getElementById('sliderLine');
+const sliderHandle = document.getElementById('sliderHandle');
+let isDragging = false;
+
+function updateSlider(x) {
+  const rect = slider.getBoundingClientRect();
+  let pct = ((x - rect.left) / rect.width) * 100;
+  pct = Math.max(2, Math.min(98, pct));
+  blurImg.style.clipPath = `inset(0 0 0 ${pct}%)`;
+  sliderLine.style.left = pct + '%';
+  sliderHandle.style.left = pct + '%';
+}
+
+slider.addEventListener('mousedown', (e) => { isDragging = true; updateSlider(e.clientX); });
+window.addEventListener('mousemove', (e) => { if (isDragging) updateSlider(e.clientX); });
+window.addEventListener('mouseup', () => { isDragging = false; });
+
+slider.addEventListener('touchstart', (e) => { isDragging = true; updateSlider(e.touches[0].clientX); }, { passive: true });
+window.addEventListener('touchmove', (e) => { if (isDragging) updateSlider(e.touches[0].clientX); }, { passive: true });
+window.addEventListener('touchend', () => { isDragging = false; });
+
+/* ═══════════════ QUESTIONNAIRE ═══════════════ */
+let currentStep = 1;
+const totalSteps = 5;
+
+function showStep(n) {
+  for (let i = 1; i <= totalSteps; i++) {
+    const step = document.getElementById('qStep' + i);
+    if (step) step.classList.toggle('active', i === n);
+  }
+  const progress = document.querySelectorAll('#qProgress li');
+  progress.forEach((li, idx) => {
+    li.classList.remove('active', 'completed');
+    if (idx + 1 === n) li.classList.add('active');
+    else if (idx + 1 < n) li.classList.add('completed');
+  });
+}
+
+function nextStep(n) {
+  if (n === 5) buildSummary();
+  currentStep = n;
+  showStep(n);
+  document.getElementById('questionnaire').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function prevStep(n) {
+  currentStep = n;
+  showStep(n);
+}
+
+function buildSummary() {
+  const nombre = document.getElementById('qNombre').value || 'No proporcionado';
+  const edad = document.getElementById('qEdad').value || '—';
+  const tel = document.getElementById('qTel').value || '—';
+  const motivo = document.querySelector('input[name="motivo"]:checked');
+  const motivoMap = { cataratas: 'Posibles cataratas', lasik: 'Interés en LASIK', astigmatismo: 'Astigmatismo', otro: 'Otro / Revisión general' };
+  const sintomas = [];
+  document.querySelectorAll('#qStep2 input[type="checkbox"]:checked').forEach(cb => {
+    const map = { borrosa: 'Visión borrosa', nocturna: 'Dificultad nocturna', halos: 'Halos de luz', dolor: 'Dolor de cabeza', fatiga: 'Fatiga visual', doble: 'Visión doble' };
+    sintomas.push(map[cb.value] || cb.value);
+  });
+
+  const html = `
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 16px;">
+      <strong>Nombre:</strong><span>${nombre}</span>
+      <strong>Edad:</strong><span>${edad} años</span>
+      <strong>Teléfono:</strong><span>${tel}</span>
+      <strong>Motivo:</strong><span>${motivo ? motivoMap[motivo.value] : '—'}</span>
+      <strong>Síntomas:</strong><span>${sintomas.length ? sintomas.join(', ') : '—'}</span>
+    </div>
+  `;
+  document.getElementById('qResumen').innerHTML = html;
+}
+
+async function submitQuestionnaire() {
+  const nombre = document.getElementById('qNombre').value;
+  if (!nombre) { alert('Por favor ingresa tu nombre'); return; }
+
+  // Recopilar datos del paciente
+  const primeraChecked = document.querySelector('input[name="primera"]:checked');
+  const paciente = {
+    nombre,
+    edad: parseInt(document.getElementById('qEdad').value) || null,
+    telefono: document.getElementById('qTel').value,
+    email: document.getElementById('qEmail').value,
+    primera_consulta: primeraChecked ? primeraChecked.value === 'si' : true,
+  };
+
+  // Recopilar datos del cuestionario
+  const motivoChecked = document.querySelector('input[name="motivo"]:checked');
+  const lentesChecked = document.querySelector('input[name="lentes"]:checked');
+  const familiaChecked = document.querySelector('input[name="familia"]:checked');
+  const pantallasChecked = document.querySelector('input[name="pantallas"]:checked');
+  const deporteChecked = document.querySelector('input[name="deporte"]:checked');
+  const horarioChecked = document.querySelector('input[name="horario"]:checked');
+
+  const sintomas = [];
+  document.querySelectorAll('#qStep2 input[type="checkbox"]:checked').forEach(cb => sintomas.push(cb.value));
+  const condiciones = [];
+  document.querySelectorAll('#qStep3 input[type="checkbox"]:checked').forEach(cb => condiciones.push(cb.value));
+
+  const cuestionario = {
+    motivo: motivoChecked?.value || null,
+    sintomas,
+    desde_cuando: document.getElementById('qDesde').value || null,
+    usa_lentes: lentesChecked?.value || null,
+    condiciones_medicas: condiciones,
+    antecedentes_familiares: familiaChecked?.value || null,
+    medicamentos: document.getElementById('qMedicamentos').value || null,
+    horas_pantalla: pantallasChecked?.value || null,
+    deporte: deporteChecked?.value || null,
+    ocupacion: document.getElementById('qOcupacion').value || null,
+    notas: document.getElementById('qNotas').value || null,
+    horario_preferido: horarioChecked?.value || null,
+    fecha_preferida: document.getElementById('qFecha').value || null,
+  };
+
+  // Enviar al backend
+  try {
+    const res = await fetch('/api/cuestionario', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paciente, cuestionario }),
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      document.querySelectorAll('.q-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('qSuccess').classList.add('active');
+      document.querySelectorAll('#qProgress li').forEach(li => {
+        li.classList.remove('active');
+        li.classList.add('completed');
+      });
+
+      // Mostrar aviso de lentes de contacto si aplica
+      const usaLentes = cuestionario.usa_lentes;
+      if (usaLentes === 'contacto' || usaLentes === 'ambos') {
+        document.getElementById('avisoLentes').style.display = 'block';
+      }
+    } else {
+      alert('Hubo un error al enviar tu información. Intenta de nuevo.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Error de conexión. Verifica tu internet e intenta de nuevo.');
+  }
+}
+</script>
+</body>
+</html>

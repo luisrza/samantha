@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin — Dra. Samantha Andrade</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --teal-deep:#0B3B3C; --teal:#1A6B6D; --teal-light:#2A9D8F;
+  --gold:#C8A96E; --cream:#FAF7F2; --white:#fff;
+  --gray-100:#F5F3EF; --gray-200:#E8E4DD; --gray-400:#A09A90; --gray-600:#6B6560; --gray-800:#3A3530;
+  --text:#2C2825;
+  --radius:14px; --transition:0.3s ease;
+}
+body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--text); }
+h1,h2,h3 { font-family:'Playfair Display',serif; }
+
+/* Login */
+#loginScreen {
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; background:linear-gradient(135deg,var(--teal-deep),var(--teal));
+}
+.login-box {
+  background:var(--white); border-radius:20px; padding:48px 40px;
+  max-width:400px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.2); text-align:center;
+}
+.login-box h2 { color:var(--teal-deep); margin-bottom:8px; }
+.login-box p { color:var(--gray-400); font-size:0.9rem; margin-bottom:28px; }
+.login-box input {
+  width:100%; padding:14px 18px; border:2px solid var(--gray-200);
+  border-radius:10px; font-size:0.95rem; font-family:'DM Sans'; outline:none;
+  transition:var(--transition);
+}
+.login-box input:focus { border-color:var(--teal); }
+.login-box button {
+  width:100%; padding:14px; margin-top:16px; background:var(--teal);
+  color:white; border:none; border-radius:10px; font-size:0.95rem;
+  font-weight:600; cursor:pointer; font-family:'DM Sans'; transition:var(--transition);
+}
+.login-box button:hover { background:var(--teal-deep); }
+.login-error { color:#e74c3c; font-size:0.85rem; margin-top:12px; display:none; }
+
+/* Dashboard */
+#dashboard { display:none; }
+.topbar {
+  background:var(--teal-deep); color:white; padding:16px 32px;
+  display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:0; z-index:100;
+}
+.topbar h1 { font-size:1.2rem; }
+.topbar-right { display:flex; align-items:center; gap:16px; }
+.topbar-right button {
+  background:rgba(255,255,255,0.15); border:none; color:white;
+  padding:8px 18px; border-radius:8px; cursor:pointer; font-family:'DM Sans'; font-size:0.85rem;
+}
+.topbar-right button:hover { background:rgba(255,255,255,0.25); }
+
+.main { display:flex; min-height:calc(100vh - 56px); }
+
+/* Sidebar - patient list */
+.sidebar {
+  width:360px; background:var(--white); border-right:1px solid var(--gray-200);
+  overflow-y:auto; flex-shrink:0;
+}
+.sidebar-header { padding:20px; border-bottom:1px solid var(--gray-200); }
+.sidebar-header h3 { font-size:1rem; color:var(--teal-deep); margin-bottom:12px; }
+.search-input {
+  width:100%; padding:10px 14px; border:1px solid var(--gray-200);
+  border-radius:8px; font-family:'DM Sans'; font-size:0.88rem; outline:none;
+}
+.search-input:focus { border-color:var(--teal); }
+
+.patient-list { list-style:none; }
+.patient-item {
+  padding:16px 20px; border-bottom:1px solid var(--gray-100);
+  cursor:pointer; transition:var(--transition);
+}
+.patient-item:hover { background:var(--gray-100); }
+.patient-item.active { background:rgba(26,107,109,0.06); border-left:3px solid var(--teal); }
+.patient-item strong { display:block; font-size:0.92rem; color:var(--teal-deep); }
+.patient-item span { font-size:0.78rem; color:var(--gray-400); }
+.patient-item .patient-meta {
+  display:flex; gap:12px; margin-top:4px;
+}
+.patient-badge {
+  display:inline-block; padding:2px 8px; border-radius:4px;
+  font-size:0.7rem; font-weight:600; text-transform:uppercase;
+}
+.badge-cataratas { background:rgba(26,107,109,0.1); color:var(--teal); }
+.badge-lasik { background:rgba(200,169,110,0.15); color:#8B7340; }
+.badge-astigmatismo { background:rgba(42,157,143,0.1); color:var(--teal-light); }
+.badge-otro { background:var(--gray-100); color:var(--gray-600); }
+
+.no-patients { padding:40px 20px; text-align:center; color:var(--gray-400); font-size:0.9rem; }
+
+/* Content area */
+.content { flex:1; padding:32px; overflow-y:auto; }
+.content-empty {
+  display:flex; align-items:center; justify-content:center;
+  min-height:400px; color:var(--gray-400); font-size:1rem;
+}
+
+.detail-card {
+  background:var(--white); border-radius:var(--radius); padding:32px;
+  border:1px solid var(--gray-200); margin-bottom:24px;
+}
+.detail-card h3 {
+  font-size:1.1rem; color:var(--teal-deep); margin-bottom:16px;
+  padding-bottom:12px; border-bottom:1px solid var(--gray-200);
+}
+.detail-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+}
+.detail-field label {
+  display:block; font-size:0.75rem; font-weight:600;
+  color:var(--gray-400); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;
+}
+.detail-field span {
+  font-size:0.92rem; color:var(--text); line-height:1.5;
+}
+.detail-field.full { grid-column:1/-1; }
+
+/* Email form */
+.email-form { margin-top:16px; }
+.email-form input, .email-form textarea {
+  width:100%; padding:12px 16px; border:1px solid var(--gray-200);
+  border-radius:8px; font-family:'DM Sans'; font-size:0.9rem;
+  margin-bottom:12px; outline:none; transition:var(--transition);
+}
+.email-form input:focus, .email-form textarea:focus { border-color:var(--teal); }
+.email-form textarea { min-height:120px; resize:vertical; }
+
+.email-btns { display:flex; gap:10px; flex-wrap:wrap; }
+.btn-send {
+  padding:10px 24px; background:var(--teal); color:white; border:none;
+  border-radius:8px; font-family:'DM Sans'; font-weight:600; cursor:pointer;
+  font-size:0.88rem; transition:var(--transition);
+}
+.btn-send:hover { background:var(--teal-deep); }
+.btn-quick {
+  padding:10px 20px; background:var(--gray-100); color:var(--gray-600);
+  border:1px solid var(--gray-200); border-radius:8px; font-family:'DM Sans';
+  font-size:0.85rem; cursor:pointer; transition:var(--transition);
+}
+.btn-quick:hover { background:var(--gray-200); }
+
+/* Email history */
+.email-item {
+  padding:14px 0; border-bottom:1px solid var(--gray-100);
+}
+.email-item:last-child { border-bottom:none; }
+.email-item strong { font-size:0.88rem; color:var(--teal-deep); }
+.email-item span { display:block; font-size:0.78rem; color:var(--gray-400); margin-top:2px; }
+
+/* Toast */
+.toast {
+  position:fixed; bottom:24px; right:24px; padding:14px 24px;
+  border-radius:10px; color:white; font-size:0.9rem; font-weight:500;
+  z-index:9999; transform:translateY(100px); opacity:0;
+  transition:all 0.4s ease;
+}
+.toast.show { transform:translateY(0); opacity:1; }
+.toast-success { background:var(--teal); }
+.toast-error { background:#e74c3c; }
+
+/* Stats bar */
+.stats-bar {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;
+}
+.stat-card {
+  background:var(--white); border-radius:var(--radius); padding:20px;
+  border:1px solid var(--gray-200); text-align:center;
+}
+.stat-card .stat-num {
+  font-family:'Playfair Display'; font-size:1.8rem; color:var(--teal); font-weight:700;
+}
+.stat-card .stat-label { font-size:0.78rem; color:var(--gray-400); margin-top:4px; }
+
+@media (max-width:900px) {
+  .main { flex-direction:column; }
+  .sidebar { width:100%; max-height:300px; }
+  .detail-grid { grid-template-columns:1fr; }
+  .stats-bar { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h2>Panel Admin</h2>
+    <p>Dra. Samantha Andrade · Oftalmología</p>
+    <input type="password" id="loginPass" placeholder="Contraseña de administrador" />
+    <button onclick="login()">Ingresar</button>
+    <div class="login-error" id="loginError">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="topbar">
+    <h1>Panel de Pacientes</h1>
+    <div class="topbar-right">
+      <span id="totalCount"></span>
+      <button onclick="loadPatients()">Actualizar</button>
+      <button onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h3>Pacientes</h3>
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre..." oninput="filterPatients()" />
+      </div>
+      <ul class="patient-list" id="patientList">
+        <li class="no-patients">Cargando pacientes...</li>
+      </ul>
+    </div>
+    <div class="content" id="contentArea">
+      <div class="content-empty">Selecciona un paciente para ver su información</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let adminPassword = '';
+let patients = [];
+let selectedId = null;
+
+function login() {
+  adminPassword = document.getElementById('loginPass').value;
+  fetch('/api/pacientes', { headers: { 'x-admin-password': adminPassword } })
+    .then(r => {
+      if (r.status === 401) {
+        document.getElementById('loginError').style.display = 'block';
+        throw new Error('unauthorized');
+      }
+      return r.json();
+    })
+    .then(data => {
+      patients = data;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      renderPatientList();
+    })
+    .catch(() => {});
+}
+
+function logout() {
+  adminPassword = '';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').style.display = 'none';
+}
+
+function loadPatients() {
+  fetch('/api/pacientes', { headers: { 'x-admin-password': adminPassword } })
+    .then(r => r.json())
+    .then(data => {
+      patients = data;
+      renderPatientList();
+      showToast('Lista actualizada', 'success');
+    });
+}
+
+function renderPatientList() {
+  const list = document.getElementById('patientList');
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = patients.filter(p => p.nombre.toLowerCase().includes(search));
+  document.getElementById('totalCount').textContent = `${patients.length} pacientes`;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<li class="no-patients">No se encontraron pacientes</li>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(p => {
+    const date = new Date(p.created_at).toLocaleDateString('es-MX', { day:'numeric', month:'short', year:'numeric' });
+    const motivo = p.motivo || 'general';
+    const badgeClass = motivo === 'cataratas' ? 'badge-cataratas' : motivo === 'lasik' ? 'badge-lasik' : motivo === 'astigmatismo' ? 'badge-astigmatismo' : 'badge-otro';
+    return `
+      <li class="patient-item ${p.id === selectedId ? 'active' : ''}" onclick="selectPatient(${p.id})">
+        <strong>${p.nombre}</strong>
+        <div class="patient-meta">
+          <span>${date}</span>
+          <span class="patient-badge ${badgeClass}">${motivo}</span>
+        </div>
+      </li>`;
+  }).join('');
+}
+
+function filterPatients() { renderPatientList(); }
+
+function selectPatient(id) {
+  selectedId = id;
+  renderPatientList();
+  fetch(`/api/pacientes/${id}`, { headers: { 'x-admin-password': adminPassword } })
+    .then(r => r.json())
+    .then(data => renderDetail(data));
+}
+
+function renderDetail(p) {
+  const c = p.cuestionario || {};
+  const sintomasArr = Array.isArray(c.sintomas) ? c.sintomas : [];
+  const condArr = Array.isArray(c.condiciones_medicas) ? c.condiciones_medicas : [];
+  const sintomasMap = { borrosa:'Visión borrosa', nocturna:'Dificultad nocturna', halos:'Halos de luz', dolor:'Dolor de cabeza', fatiga:'Fatiga visual', doble:'Visión doble' };
+  const condMap = { diabetes:'Diabetes', hipertension:'Hipertensión', tiroides:'Tiroides', ninguna:'Ninguna' };
+  const lentesMap = { armazon:'Armazón', contacto:'Contacto', ambos:'Ambos', no:'No usa' };
+  const motivoMap = { cataratas:'Cataratas', lasik:'LASIK', astigmatismo:'Astigmatismo', otro:'Otro/General' };
+  const date = new Date(p.created_at).toLocaleDateString('es-MX', { day:'numeric', month:'long', year:'numeric' });
+
+  const content = document.getElementById('contentArea');
+  content.innerHTML = `
+    <div class="detail-card">
+      <h3>Datos del Paciente</h3>
+      <div class="detail-grid">
+        <div class="detail-field"><label>Nombre</label><span>${p.nombre}</span></div>
+        <div class="detail-field"><label>Edad</label><span>${p.edad || '—'} años</span></div>
+        <div class="detail-field"><label>Teléfono</label><span>${p.telefono || '—'}</span></div>
+        <div class="detail-field"><label>Email</label><span>${p.email || 'No proporcionado'}</span></div>
+        <div class="detail-field"><label>Primera consulta</label><span>${p.primera_consulta ? 'Sí' : 'No'}</span></div>
+        <div class="detail-field"><label>Registro</label><span>${date}</span></div>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <h3>Cuestionario Pre-Consulta</h3>
+      ${c.id ? `
+      <div class="detail-grid">
+        <div class="detail-field"><label>Motivo</label><span>${motivoMap[c.motivo] || c.motivo || '—'}</span></div>
+        <div class="detail-field"><label>Síntomas desde</label><span>${c.desde_cuando || '—'}</span></div>
+        <div class="detail-field full"><label>Síntomas</label><span>${sintomasArr.map(s => sintomasMap[s] || s).join(', ') || '—'}</span></div>
+        <div class="detail-field"><label>Usa lentes</label><span>${lentesMap[c.usa_lentes] || c.usa_lentes || '—'}</span></div>
+        <div class="detail-field"><label>Condiciones médicas</label><span>${condArr.map(c2 => condMap[c2] || c2).join(', ') || '—'}</span></div>
+        <div class="detail-field"><label>Antecedentes familiares</label><span>${c.antecedentes_familiares || '—'}</span></div>
+        <div class="detail-field full"><label>Medicamentos</label><span>${c.medicamentos || '—'}</span></div>
+        <div class="detail-field"><label>Horas pantalla/día</label><span>${c.horas_pantalla || '—'}</span></div>
+        <div class="detail-field"><label>Deporte</label><span>${c.deporte || '—'}</span></div>
+        <div class="detail-field"><label>Ocupación</label><span>${c.ocupacion || '—'}</span></div>
+        <div class="detail-field full"><label>Notas adicionales</label><span>${c.notas || '—'}</span></div>
+        <div class="detail-field"><label>Horario preferido</label><span>${c.horario_preferido || '—'}</span></div>
+        <div class="detail-field"><label>Fecha preferida</label><span>${c.fecha_preferida ? new Date(c.fecha_preferida).toLocaleDateString('es-MX') : '—'}</span></div>
+      </div>
+      ` : '<p style="color:var(--gray-400);">Sin cuestionario registrado</p>'}
+    </div>
+
+    <div class="detail-card">
+      <h3>Enviar Correo</h3>
+      ${p.email ? `
+      <div class="email-form">
+        <input type="text" id="emailAsunto" placeholder="Asunto del correo" />
+        <textarea id="emailCuerpo" placeholder="Escribe el mensaje para el paciente..."></textarea>
+        <div class="email-btns">
+          <button class="btn-send" onclick="sendEmail(${p.id})">Enviar Correo</button>
+          <button class="btn-quick" onclick="sendReminder(${p.id})">Enviar Recordatorio de Cita</button>
+        </div>
+      </div>
+      ` : '<p style="color:var(--gray-400);">Este paciente no tiene correo registrado. No se pueden enviar correos.</p>'}
+    </div>
+
+    <div class="detail-card">
+      <h3>Historial de Correos</h3>
+      ${p.correos && p.correos.length > 0 ? p.correos.map(e => `
+        <div class="email-item">
+          <strong>${e.asunto}</strong>
+          <span>${new Date(e.enviado_at).toLocaleString('es-MX')}</span>
+        </div>
+      `).join('') : '<p style="color:var(--gray-400);">No se han enviado correos a este paciente.</p>'}
+    </div>
+  `;
+}
+
+function sendEmail(pacienteId) {
+  const asunto = document.getElementById('emailAsunto').value;
+  const cuerpo = document.getElementById('emailCuerpo').value;
+  if (!asunto || !cuerpo) { showToast('Completa asunto y mensaje', 'error'); return; }
+
+  fetch('/api/correos/enviar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+    body: JSON.stringify({ paciente_id: pacienteId, asunto, cuerpo, tipo: 'personalizado' })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      showToast('Correo enviado exitosamente', 'success');
+      selectPatient(pacienteId);
+    } else {
+      showToast(data.error || 'Error enviando correo', 'error');
+    }
+  })
+  .catch(() => showToast('Error de conexión', 'error'));
+}
+
+function sendReminder(pacienteId) {
+  fetch('/api/correos/enviar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+    body: JSON.stringify({ paciente_id: pacienteId, asunto: 'Recordatorio de cita — Dra. Samantha Andrade', tipo: 'recordatorio' })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      showToast('Recordatorio enviado', 'success');
+      selectPatient(pacienteId);
+    } else {
+      showToast(data.error || 'Error', 'error');
+    }
+  })
+  .catch(() => showToast('Error de conexión', 'error'));
+}
+
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast toast-${type} show`;
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+document.getElementById('loginPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
+});
+</script>
+</body>
+</html>
