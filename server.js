@@ -133,15 +133,18 @@ app.get('/admin', (req, res) => {
 
 // ─── Iniciar ───
 async function start() {
+  // Iniciar servidor aunque la DB falle (para que el frontend funcione)
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Panel admin en http://localhost:${PORT}/admin`);
+  });
+
   try {
     await db.initDB();
-    app.listen(PORT, () => {
-      console.log(`Servidor corriendo en http://localhost:${PORT}`);
-      console.log(`Panel admin en http://localhost:${PORT}/admin`);
-    });
   } catch (err) {
-    console.error('Error iniciando servidor:', err);
-    process.exit(1);
+    console.error('Error conectando a la base de datos:', err.message);
+    console.error('El servidor está corriendo pero sin conexión a la DB.');
+    console.error('Verifica tu DATABASE_URL y que el host sea accesible.');
   }
 }
 
