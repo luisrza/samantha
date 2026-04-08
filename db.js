@@ -1,9 +1,10 @@
 const { Pool } = require('pg');
 
-const DB_URL = process.env.DATABASE_URL || 'postgresql://postgres.gsqpyatsaldmewiddeou:Fere19082003%3F%3F@aws-1-us-east-1.pooler.supabase.com:5432/postgres';
+// Supabase pooler — hardcoded porque Hostinger tiene su propio DATABASE_URL que interfiere
+const SUPABASE_URL = 'postgresql://postgres.gsqpyatsaldmewiddeou:Fere19082003%3F%3F@aws-1-us-east-1.pooler.supabase.com:5432/postgres';
 
 const pool = new Pool({
-  connectionString: DB_URL,
+  connectionString: SUPABASE_URL,
   ssl: { rejectUnauthorized: false },
   max: 10,
   idleTimeoutMillis: 30000,
