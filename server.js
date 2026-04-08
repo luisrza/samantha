@@ -1,14 +1,23 @@
-require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
+// ─── Config con fallbacks hardcodeados ───
+const CONFIG = {
+  PORT: process.env.PORT || 6969,
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'samantha2026',
+};
+console.log('CONFIG loaded — ADMIN_PASSWORD set:', CONFIG.ADMIN_PASSWORD ? 'YES' : 'NO');
+console.log('DATABASE_URL set:', process.env.DATABASE_URL ? 'YES' : 'NO');
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const path = require('path');
 const db = require('./db');
 const { enviarCorreo, templateConfirmacion, templateRecordatorio } = require('./mailer');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = CONFIG.PORT;
 
 // ─── Seguridad ───
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -31,7 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ─── Middleware auth para rutas admin ───
 function authAdmin(req, res, next) {
   const password = req.headers['x-admin-password'];
-  if (password !== (process.env.ADMIN_PASSWORD || 'samantha2026')) {
+  if (password !== CONFIG.ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'No autorizado' });
   }
   next();
