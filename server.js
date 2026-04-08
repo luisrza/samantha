@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 const db = require('./db');
 const { enviarCorreo, templateConfirmacion, templateRecordatorio } = require('./mailer');
@@ -8,9 +10,23 @@ const { enviarCorreo, templateConfirmacion, templateRecordatorio } = require('./
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+// ─── Seguridad ───
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGIN || '*',
+  methods: ['GET', 'POST'],
+}));
+app.use(express.json({ limit: '50kb' }));
+
+// Rate limit para el cuestionario (max 10 por IP cada 15 min)
+const formLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Demasiadas solicitudes, intenta más tarde.' },
+});
+
+// Servir archivos estáticos SOLO desde /public
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Middleware auth para rutas admin ───
 function authAdmin(req, res, next) {
@@ -22,9 +38,13 @@ function authAdmin(req, res, next) {
 }
 
 // ─── POST /api/cuestionario ─── Recibe el formulario del frontend
-app.post('/api/cuestionario', async (req, res) => {
+app.post('/api/cuestionario', formLimiter, async (req, res) => {
   try {
     const { paciente, cuestionario } = req.body;
+
+    if (!paciente || !paciente.nombre) {
+      return res.status(400).json({ error: 'Nombre es requerido' });
+    }
 
     const nuevoPaciente = await db.crearPaciente({
       nombre: paciente.nombre,
@@ -128,12 +148,17 @@ app.get('/api/correos/:pacienteId', authAdmin, async (req, res) => {
 
 // ─── Servir admin.html ───
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// ─── Error handler global ───
+app.use((err, req, res, next) => {
+  console.error('Error no manejado:', err);
+  res.status(500).json({ error: 'Error interno del servidor' });
 });
 
 // ─── Iniciar ───
 async function start() {
-  // Iniciar servidor aunque la DB falle (para que el frontend funcione)
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
     console.log(`Panel admin en http://localhost:${PORT}/admin`);
@@ -144,7 +169,6 @@ async function start() {
   } catch (err) {
     console.error('Error conectando a la base de datos:', err.message);
     console.error('El servidor está corriendo pero sin conexión a la DB.');
-    console.error('Verifica tu DATABASE_URL y que el host sea accesible.');
   }
 }
 

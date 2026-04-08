@@ -5,6 +5,14 @@ const DB_URL = process.env.DATABASE_URL || 'postgresql://postgres.gsqpyatsaldmew
 const pool = new Pool({
   connectionString: DB_URL,
   ssl: { rejectUnauthorized: false },
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
+
+// Prevenir crash si una conexión idle se desconecta
+pool.on('error', (err) => {
+  console.error('Error inesperado en conexión idle:', err.message);
 });
 
 async function initDB() {
@@ -92,21 +100,26 @@ async function obtenerPacientes() {
 }
 
 async function obtenerPaciente(id) {
-  const paciente = await pool.query('SELECT * FROM pacientes WHERE id = $1', [id]);
-  if (paciente.rows.length === 0) return null;
+  const client = await pool.connect();
+  try {
+    const paciente = await client.query('SELECT * FROM pacientes WHERE id = $1', [id]);
+    if (paciente.rows.length === 0) return null;
 
-  const cuestionario = await pool.query(
-    'SELECT * FROM cuestionarios WHERE paciente_id = $1 ORDER BY created_at DESC LIMIT 1', [id]
-  );
-  const correos = await pool.query(
-    'SELECT * FROM correos_enviados WHERE paciente_id = $1 ORDER BY enviado_at DESC', [id]
-  );
+    const cuestionario = await client.query(
+      'SELECT * FROM cuestionarios WHERE paciente_id = $1 ORDER BY created_at DESC LIMIT 1', [id]
+    );
+    const correos = await client.query(
+      'SELECT * FROM correos_enviados WHERE paciente_id = $1 ORDER BY enviado_at DESC', [id]
+    );
 
-  return {
-    ...paciente.rows[0],
-    cuestionario: cuestionario.rows[0] || null,
-    correos: correos.rows
-  };
+    return {
+      ...paciente.rows[0],
+      cuestionario: cuestionario.rows[0] || null,
+      correos: correos.rows
+    };
+  } finally {
+    client.release();
+  }
 }
 
 async function guardarCorreoEnviado(pacienteId, asunto, cuerpo) {
