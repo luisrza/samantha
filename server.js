@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname)));
 // ─── Middleware auth para rutas admin ───
 function authAdmin(req, res, next) {
   const password = req.headers['x-admin-password'];
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (password !== (process.env.ADMIN_PASSWORD || 'samantha2026')) {
     return res.status(401).json({ error: 'No autorizado' });
   }
   next();
