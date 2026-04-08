@@ -1,18 +1,19 @@
 const { Pool } = require('pg');
 
-// Usar SUPABASE_URL (no DATABASE_URL — Hostinger lo pisa con su propia DB)
-const DB_URL = process.env.SUPABASE_URL;
-if (!DB_URL) {
-  console.error('ERROR: Variable de entorno SUPABASE_URL no está configurada');
-}
-
+// Conexión por partes separadas — Hostinger corrompe la URL si se pasa completa
 const pool = new Pool({
-  connectionString: DB_URL,
+  host: process.env.SB_HOST || 'aws-1-us-east-1.pooler.supabase.com',
+  port: parseInt(process.env.SB_PORT || '5432'),
+  database: process.env.SB_NAME || 'postgres',
+  user: process.env.SB_USER || 'postgres.gsqpyatsaldmewiddeou',
+  password: process.env.SB_PASS || 'Fere19082003??',
   ssl: { rejectUnauthorized: false },
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
 });
+
+console.log('DB config — user:', pool.options.user, '| host:', pool.options.host);
 
 pool.on('error', (err) => {
   console.error('Error inesperado en conexión idle:', err.message);
