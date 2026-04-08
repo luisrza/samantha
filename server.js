@@ -8,9 +8,14 @@ const { enviarCorreo, templateConfirmacion, templateRecordatorio } = require('./
 
 const app = express();
 
-// ─── Config hardcodeada — Hostinger pisa las variables de entorno ───
-const ADMIN_PASSWORD = 'samantha2026';
-const PORT = 6969;
+// ─── Config via env vars con nombres únicos (Hostinger no los pisa) ───
+const ADMIN_PASSWORD = process.env.ADMIN_PASS || 'samantha2026';
+const PORT = process.env.PORT || 6969;
+
+console.log('=== STARTUP ===');
+console.log('SUPABASE_URL:', process.env.SUPABASE_URL ? 'SET' : 'NOT SET');
+console.log('ADMIN_PASS:', process.env.ADMIN_PASS ? 'SET' : 'NOT SET (using default)');
+console.log('SMTP_MAIL_HOST:', process.env.SMTP_MAIL_HOST ? 'SET' : 'NOT SET');
 
 // ─── Seguridad ───
 app.use(helmet({ contentSecurityPolicy: false }));

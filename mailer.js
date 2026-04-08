@@ -2,15 +2,16 @@ const nodemailer = require('nodemailer');
 
 let transporter = null;
 
+// Usar nombres únicos para evitar conflictos con Hostinger
 function getTransporter() {
   if (!transporter) {
     transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_PORT === '465',
+      host: process.env.SMTP_MAIL_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_MAIL_PORT || '587'),
+      secure: (process.env.SMTP_MAIL_PORT || '587') === '465',
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.SMTP_MAIL_USER,
+        pass: process.env.SMTP_MAIL_PASS,
       },
     });
   }
@@ -18,9 +19,13 @@ function getTransporter() {
 }
 
 async function enviarCorreo(destinatario, asunto, htmlBody) {
+  if (!process.env.SMTP_MAIL_USER) {
+    console.log('SMTP no configurado — correo no enviado a:', destinatario);
+    return null;
+  }
   const transport = getTransporter();
   const info = await transport.sendMail({
-    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    from: process.env.SMTP_MAIL_FROM || process.env.SMTP_MAIL_USER,
     to: destinatario,
     subject: asunto,
     html: wrapTemplate(htmlBody),
