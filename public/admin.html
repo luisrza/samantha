@@ -178,6 +178,39 @@ h1,h2,h3 { font-family:'Playfair Display',serif; }
 }
 .stat-card .stat-label { font-size:0.78rem; color:var(--gray-400); margin-top:4px; }
 
+/* Dropzone */
+.dropzone {
+  border:2px dashed var(--gray-200); border-radius:var(--radius);
+  padding:32px; text-align:center; transition:var(--transition);
+  cursor:pointer; background:var(--gray-100);
+}
+.dropzone.dragover {
+  border-color:var(--teal); background:rgba(26,107,109,0.04);
+}
+.dropzone svg { margin:0 auto; display:block; }
+
+.file-list { margin-top:12px; }
+.file-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 14px; background:var(--white); border:1px solid var(--gray-200);
+  border-radius:8px; margin-bottom:8px; font-size:0.85rem;
+}
+.file-item-info { display:flex; align-items:center; gap:10px; }
+.file-item-icon {
+  width:32px; height:32px; border-radius:6px; display:flex;
+  align-items:center; justify-content:center; flex-shrink:0;
+}
+.file-item-icon.pdf { background:rgba(220,53,69,0.1); color:#dc3545; }
+.file-item-icon.img { background:rgba(26,107,109,0.1); color:var(--teal); }
+.file-item-icon.doc { background:rgba(200,169,110,0.1); color:var(--gold); }
+.file-item-name { font-weight:500; color:var(--text); }
+.file-item-size { font-size:0.75rem; color:var(--gray-400); }
+.file-item-remove {
+  background:none; border:none; color:var(--gray-400);
+  cursor:pointer; font-size:1.1rem; padding:4px 8px; transition:var(--transition);
+}
+.file-item-remove:hover { color:#dc3545; }
+
 @media (max-width:900px) {
   .main { flex-direction:column; }
   .sidebar { width:100%; max-height:300px; }
@@ -350,28 +383,29 @@ function renderDetail(p) {
       ` : '<p style="color:var(--gray-400);">Sin cuestionario registrado</p>'}
     </div>
 
-    <div class="detail-card">
-      <h3>Enviar Correo</h3>
-      ${p.email ? `
-      <div class="email-form">
-        <input type="text" id="emailAsunto" placeholder="Asunto del correo" />
-        <textarea id="emailCuerpo" placeholder="Escribe el mensaje para el paciente..."></textarea>
+    <div class="detail-card" style="opacity:0.6;position:relative;">
+      <div style="position:absolute;top:16px;right:16px;background:var(--gold);color:white;padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:600;letter-spacing:0.5px;">EN CONSTRUCCIÓN</div>
+      <h3 style="color:var(--gray-400);">Enviar Correo</h3>
+      <div class="email-form" style="pointer-events:none;">
+        <input type="text" disabled placeholder="Asunto del correo" style="background:var(--gray-100);color:var(--gray-400);cursor:not-allowed;" />
+        <textarea disabled placeholder="Escribe el mensaje para el paciente..." style="background:var(--gray-100);color:var(--gray-400);cursor:not-allowed;"></textarea>
         <div class="email-btns">
-          <button class="btn-send" onclick="sendEmail(${p.id})">Enviar Correo</button>
-          <button class="btn-quick" onclick="sendReminder(${p.id})">Enviar Recordatorio de Cita</button>
+          <button class="btn-send" disabled style="background:var(--gray-400);cursor:not-allowed;">Enviar Correo</button>
+          <button class="btn-quick" disabled style="cursor:not-allowed;">Enviar Recordatorio</button>
         </div>
       </div>
-      ` : '<p style="color:var(--gray-400);">Este paciente no tiene correo registrado. No se pueden enviar correos.</p>'}
+      <p style="color:var(--gold);font-size:0.82rem;margin-top:12px;font-weight:500;">Próximamente: envío de correos y recordatorios automáticos.</p>
     </div>
 
     <div class="detail-card">
-      <h3>Historial de Correos</h3>
-      ${p.correos && p.correos.length > 0 ? p.correos.map(e => `
-        <div class="email-item">
-          <strong>${e.asunto}</strong>
-          <span>${new Date(e.enviado_at).toLocaleString('es-MX')}</span>
-        </div>
-      `).join('') : '<p style="color:var(--gray-400);">No se han enviado correos a este paciente.</p>'}
+      <h3>Archivos del Paciente</h3>
+      <div id="dropzone-${p.id}" class="dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, ${p.id})">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p style="color:var(--gray-400);font-size:0.88rem;margin-top:8px;">Arrastra archivos aquí o <label for="fileInput-${p.id}" style="color:var(--teal);cursor:pointer;font-weight:600;">selecciona</label></p>
+        <p style="color:var(--gray-400);font-size:0.75rem;">PDF, imágenes, documentos (máx 5MB)</p>
+        <input type="file" id="fileInput-${p.id}" multiple style="display:none;" onchange="handleFileSelect(event, ${p.id})" />
+      </div>
+      <div id="fileList-${p.id}" class="file-list"></div>
     </div>
   `;
 }
@@ -426,6 +460,96 @@ function showToast(msg, type) {
 document.getElementById('loginPass').addEventListener('keydown', e => {
   if (e.key === 'Enter') login();
 });
+
+/* ═══════════════ DRAG & DROP FILES ═══════════════ */
+const patientFiles = {}; // { pacienteId: [{ name, size, type, data }] }
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('dragover');
+}
+
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove('dragover');
+}
+
+function handleDrop(e, pacienteId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  const files = Array.from(e.dataTransfer.files);
+  processFiles(files, pacienteId);
+}
+
+function handleFileSelect(e, pacienteId) {
+  const files = Array.from(e.target.files);
+  processFiles(files, pacienteId);
+  e.target.value = '';
+}
+
+function processFiles(files, pacienteId) {
+  if (!patientFiles[pacienteId]) patientFiles[pacienteId] = [];
+
+  files.forEach(file => {
+    if (file.size > 5 * 1024 * 1024) {
+      showToast(`${file.name} excede 5MB`, 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      patientFiles[pacienteId].push({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        data: e.target.result,
+        date: new Date().toLocaleString('es-MX')
+      });
+      renderFiles(pacienteId);
+      showToast(`${file.name} agregado`, 'success');
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderFiles(pacienteId) {
+  const list = document.getElementById('fileList-' + pacienteId);
+  const files = patientFiles[pacienteId] || [];
+
+  if (files.length === 0) {
+    list.innerHTML = '';
+    return;
+  }
+
+  list.innerHTML = files.map((f, i) => {
+    const ext = f.name.split('.').pop().toLowerCase();
+    const isPdf = ext === 'pdf';
+    const isImg = ['jpg','jpeg','png','gif','webp'].includes(ext);
+    const iconClass = isPdf ? 'pdf' : isImg ? 'img' : 'doc';
+    const iconSvg = isPdf
+      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+      : isImg
+      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'
+      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+    const sizeStr = f.size < 1024 ? f.size + ' B' : f.size < 1048576 ? (f.size/1024).toFixed(1) + ' KB' : (f.size/1048576).toFixed(1) + ' MB';
+
+    return `<div class="file-item">
+      <div class="file-item-info">
+        <div class="file-item-icon ${iconClass}">${iconSvg}</div>
+        <div>
+          <div class="file-item-name">${f.name}</div>
+          <div class="file-item-size">${sizeStr} · ${f.date}</div>
+        </div>
+      </div>
+      <button class="file-item-remove" onclick="removeFile(${pacienteId}, ${i})" title="Eliminar">&times;</button>
+    </div>`;
+  }).join('');
+}
+
+function removeFile(pacienteId, index) {
+  patientFiles[pacienteId].splice(index, 1);
+  renderFiles(pacienteId);
+  showToast('Archivo eliminado', 'success');
+}
 </script>
 </body>
 </html>
