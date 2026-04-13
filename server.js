@@ -20,7 +20,7 @@ console.log('SMTP_MAIL_HOST:', process.env.SMTP_MAIL_HOST ? 'SET' : 'NOT SET');
 // ─── Seguridad ───
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: '*', methods: ['GET', 'POST'] }));
-app.use(express.json({ limit: '50kb' }));
+app.use(express.json({ limit: '6mb' }));
 
 const formLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -120,6 +120,58 @@ app.get('/api/correos/:pacienteId', authAdmin, async (req, res) => {
     if (!paciente) return res.status(404).json({ error: 'Paciente no encontrado' });
     res.json(paciente.correos);
   } catch (err) { console.error(err); res.status(500).json({ error: 'Error al obtener correos' }); }
+});
+
+// ─── POST /api/archivos/subir ─── Subir archivo para un paciente
+app.post('/api/archivos/subir', authAdmin, async (req, res) => {
+  try {
+    const { paciente_id, nombre, tipo, tamano, datos } = req.body;
+    if (!paciente_id || !nombre || !datos) {
+      return res.status(400).json({ error: 'Faltan campos requeridos' });
+    }
+    if (tamano > 5 * 1024 * 1024) {
+      return res.status(400).json({ error: 'Archivo excede 5MB' });
+    }
+    const archivo = await db.guardarArchivo(paciente_id, nombre, tipo, tamano, datos);
+    res.json({ ok: true, archivo });
+  } catch (err) {
+    console.error('Error subiendo archivo:', err);
+    res.status(500).json({ error: 'Error al guardar archivo' });
+  }
+});
+
+// ─── GET /api/archivos/:pacienteId ─── Listar archivos de un paciente
+app.get('/api/archivos/:pacienteId', authAdmin, async (req, res) => {
+  try {
+    const archivos = await db.obtenerArchivos(req.params.pacienteId);
+    res.json(archivos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al obtener archivos' });
+  }
+});
+
+// ─── GET /api/archivo/:id ─── Descargar un archivo
+app.get('/api/archivo/:id', authAdmin, async (req, res) => {
+  try {
+    const archivo = await db.obtenerArchivo(req.params.id);
+    if (!archivo) return res.status(404).json({ error: 'Archivo no encontrado' });
+    res.json(archivo);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al obtener archivo' });
+  }
+});
+
+// ─── DELETE /api/archivo/:id ─── Eliminar archivo
+app.delete('/api/archivo/:id', authAdmin, async (req, res) => {
+  try {
+    await db.eliminarArchivo(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al eliminar archivo' });
+  }
 });
 
 app.get('/admin', (req, res) => {

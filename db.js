@@ -59,6 +59,16 @@ async function initDB() {
         cuerpo TEXT,
         enviado_at TIMESTAMP DEFAULT NOW()
       );
+
+      CREATE TABLE IF NOT EXISTS archivos (
+        id SERIAL PRIMARY KEY,
+        paciente_id INTEGER REFERENCES pacientes(id) ON DELETE CASCADE,
+        nombre VARCHAR(500) NOT NULL,
+        tipo VARCHAR(100),
+        tamano INTEGER,
+        datos TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
     `);
     console.log('Base de datos inicializada correctamente');
   } finally {
@@ -134,7 +144,33 @@ async function guardarCorreoEnviado(pacienteId, asunto, cuerpo) {
   return res.rows[0];
 }
 
+async function guardarArchivo(pacienteId, nombre, tipo, tamano, datos) {
+  const res = await pool.query(
+    `INSERT INTO archivos (paciente_id, nombre, tipo, tamano, datos) VALUES ($1, $2, $3, $4, $5) RETURNING id, nombre, tipo, tamano, created_at`,
+    [pacienteId, nombre, tipo, tamano, datos]
+  );
+  return res.rows[0];
+}
+
+async function obtenerArchivos(pacienteId) {
+  const res = await pool.query(
+    `SELECT id, nombre, tipo, tamano, created_at FROM archivos WHERE paciente_id = $1 ORDER BY created_at DESC`,
+    [pacienteId]
+  );
+  return res.rows;
+}
+
+async function obtenerArchivo(id) {
+  const res = await pool.query('SELECT * FROM archivos WHERE id = $1', [id]);
+  return res.rows[0] || null;
+}
+
+async function eliminarArchivo(id) {
+  await pool.query('DELETE FROM archivos WHERE id = $1', [id]);
+}
+
 module.exports = {
   pool, initDB, crearPaciente, crearCuestionario,
-  obtenerPacientes, obtenerPaciente, guardarCorreoEnviado
+  obtenerPacientes, obtenerPaciente, guardarCorreoEnviado,
+  guardarArchivo, obtenerArchivos, obtenerArchivo, eliminarArchivo
 };

@@ -335,7 +335,7 @@ function selectPatient(id) {
   renderPatientList();
   fetch(`/api/pacientes/${id}`, { headers: { 'x-admin-password': adminPassword } })
     .then(r => r.json())
-    .then(data => renderDetail(data));
+    .then(data => { renderDetail(data); loadFiles(data.id); });
 }
 
 function renderDetail(p) {
@@ -461,9 +461,7 @@ document.getElementById('loginPass').addEventListener('keydown', e => {
   if (e.key === 'Enter') login();
 });
 
-/* ═══════════════ DRAG & DROP FILES ═══════════════ */
-const patientFiles = {}; // { pacienteId: [{ name, size, type, data }] }
-
+/* ═══════════════ DRAG & DROP FILES (conectado a DB) ═══════════════ */
 function handleDragOver(e) {
   e.preventDefault();
   e.currentTarget.classList.add('dragover');
@@ -476,52 +474,62 @@ function handleDragLeave(e) {
 function handleDrop(e, pacienteId) {
   e.preventDefault();
   e.currentTarget.classList.remove('dragover');
-  const files = Array.from(e.dataTransfer.files);
-  processFiles(files, pacienteId);
+  processFiles(Array.from(e.dataTransfer.files), pacienteId);
 }
 
 function handleFileSelect(e, pacienteId) {
-  const files = Array.from(e.target.files);
-  processFiles(files, pacienteId);
+  processFiles(Array.from(e.target.files), pacienteId);
   e.target.value = '';
 }
 
 function processFiles(files, pacienteId) {
-  if (!patientFiles[pacienteId]) patientFiles[pacienteId] = [];
-
   files.forEach(file => {
     if (file.size > 5 * 1024 * 1024) {
-      showToast(`${file.name} excede 5MB`, 'error');
+      showToast(file.name + ' excede 5MB', 'error');
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
-      patientFiles[pacienteId].push({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        data: e.target.result,
-        date: new Date().toLocaleString('es-MX')
-      });
-      renderFiles(pacienteId);
-      showToast(`${file.name} agregado`, 'success');
+      fetch('/api/archivos/subir', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+        body: JSON.stringify({
+          paciente_id: pacienteId,
+          nombre: file.name,
+          tipo: file.type,
+          tamano: file.size,
+          datos: e.target.result
+        })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) {
+          showToast(file.name + ' guardado', 'success');
+          loadFiles(pacienteId);
+        } else {
+          showToast(data.error || 'Error subiendo archivo', 'error');
+        }
+      })
+      .catch(() => showToast('Error de conexión', 'error'));
     };
     reader.readAsDataURL(file);
   });
 }
 
-function renderFiles(pacienteId) {
+function loadFiles(pacienteId) {
+  fetch('/api/archivos/' + pacienteId, { headers: { 'x-admin-password': adminPassword } })
+    .then(r => r.json())
+    .then(files => renderFiles(pacienteId, files))
+    .catch(() => {});
+}
+
+function renderFiles(pacienteId, files) {
   const list = document.getElementById('fileList-' + pacienteId);
-  const files = patientFiles[pacienteId] || [];
+  if (!list) return;
+  if (!files || files.length === 0) { list.innerHTML = '<p style="color:var(--gray-400);font-size:0.85rem;margin-top:8px;">Sin archivos guardados</p>'; return; }
 
-  if (files.length === 0) {
-    list.innerHTML = '';
-    return;
-  }
-
-  list.innerHTML = files.map((f, i) => {
-    const ext = f.name.split('.').pop().toLowerCase();
+  list.innerHTML = files.map(f => {
+    const ext = f.nombre.split('.').pop().toLowerCase();
     const isPdf = ext === 'pdf';
     const isImg = ['jpg','jpeg','png','gif','webp'].includes(ext);
     const iconClass = isPdf ? 'pdf' : isImg ? 'img' : 'doc';
@@ -530,25 +538,44 @@ function renderFiles(pacienteId) {
       : isImg
       ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'
       : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
-    const sizeStr = f.size < 1024 ? f.size + ' B' : f.size < 1048576 ? (f.size/1024).toFixed(1) + ' KB' : (f.size/1048576).toFixed(1) + ' MB';
+    const sizeStr = f.tamano < 1024 ? f.tamano + ' B' : f.tamano < 1048576 ? (f.tamano/1024).toFixed(1) + ' KB' : (f.tamano/1048576).toFixed(1) + ' MB';
+    const date = new Date(f.created_at).toLocaleString('es-MX');
 
-    return `<div class="file-item">
-      <div class="file-item-info">
-        <div class="file-item-icon ${iconClass}">${iconSvg}</div>
-        <div>
-          <div class="file-item-name">${f.name}</div>
-          <div class="file-item-size">${sizeStr} · ${f.date}</div>
-        </div>
-      </div>
-      <button class="file-item-remove" onclick="removeFile(${pacienteId}, ${i})" title="Eliminar">&times;</button>
-    </div>`;
+    return '<div class="file-item"><div class="file-item-info"><div class="file-item-icon ' + iconClass + '">' + iconSvg + '</div><div><div class="file-item-name">' + f.nombre + '</div><div class="file-item-size">' + sizeStr + ' · ' + date + '</div></div></div><div style="display:flex;gap:6px;">' + (isImg ? '<button class="file-item-remove" onclick="previewFile(' + f.id + ')" title="Ver" style="color:var(--teal);">&#128065;</button>' : '') + '<button class="file-item-remove" onclick="downloadFile(' + f.id + ',\'' + f.nombre + '\')" title="Descargar" style="color:var(--teal);">&#8595;</button><button class="file-item-remove" onclick="deleteFile(' + f.id + ',' + pacienteId + ')" title="Eliminar">&times;</button></div></div>';
   }).join('');
 }
 
-function removeFile(pacienteId, index) {
-  patientFiles[pacienteId].splice(index, 1);
-  renderFiles(pacienteId);
-  showToast('Archivo eliminado', 'success');
+function deleteFile(fileId, pacienteId) {
+  if (!confirm('¿Eliminar este archivo?')) return;
+  fetch('/api/archivo/' + fileId, {
+    method: 'DELETE',
+    headers: { 'x-admin-password': adminPassword }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) { showToast('Archivo eliminado', 'success'); loadFiles(pacienteId); }
+    else showToast('Error', 'error');
+  });
+}
+
+function downloadFile(fileId, nombre) {
+  fetch('/api/archivo/' + fileId, { headers: { 'x-admin-password': adminPassword } })
+    .then(r => r.json())
+    .then(f => {
+      const a = document.createElement('a');
+      a.href = f.datos;
+      a.download = nombre;
+      a.click();
+    });
+}
+
+function previewFile(fileId) {
+  fetch('/api/archivo/' + fileId, { headers: { 'x-admin-password': adminPassword } })
+    .then(r => r.json())
+    .then(f => {
+      const w = window.open('', '_blank');
+      w.document.write('<img src="' + f.datos + '" style="max-width:100%;height:auto;">');
+    });
 }
 </script>
 </body>
