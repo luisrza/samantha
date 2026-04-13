@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "samantha-site",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "6565"],
-      "port": 6565
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 6969
     }
   ]
 }

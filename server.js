@@ -18,9 +18,22 @@ console.log('ADMIN_PASS:', process.env.ADMIN_PASS ? 'SET' : 'NOT SET (using defa
 console.log('SMTP_MAIL_HOST:', process.env.SMTP_MAIL_HOST ? 'SET' : 'NOT SET');
 
 // ─── Seguridad ───
-app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({ origin: '*', methods: ['GET', 'POST'] }));
-app.use(express.json({ limit: '6mb' }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "https://images.unsplash.com"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      objectSrc: ["'none'"],
+      frameSrc: ["'self'", "https://www.google.com"],
+    },
+  },
+}));
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'DELETE'] }));
+app.use(express.json({ limit: '100kb' })); // default bajo para la mayoría de rutas
 
 const formLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -28,7 +41,13 @@ const formLimiter = rateLimit({
   message: { error: 'Demasiadas solicitudes, intenta más tarde.' },
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: { error: 'Demasiadas solicitudes admin.' },
+});
+
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1d' }));
 
 // ─── Middleware auth ───
 function authAdmin(req, res, next) {
@@ -75,7 +94,7 @@ app.post('/api/cuestionario', formLimiter, async (req, res) => {
 });
 
 // ─── GET /api/pacientes ───
-app.get('/api/pacientes', authAdmin, async (req, res) => {
+app.get('/api/pacientes', adminLimiter, authAdmin, async (req, res) => {
   try { res.json(await db.obtenerPacientes()); }
   catch (err) { console.error(err); res.status(500).json({ error: 'Error al obtener pacientes' }); }
 });
@@ -123,7 +142,7 @@ app.get('/api/correos/:pacienteId', authAdmin, async (req, res) => {
 });
 
 // ─── POST /api/archivos/subir ─── Subir archivo para un paciente
-app.post('/api/archivos/subir', authAdmin, async (req, res) => {
+app.post('/api/archivos/subir', adminLimiter, authAdmin, express.json({ limit: '7mb' }), async (req, res) => {
   try {
     const { paciente_id, nombre, tipo, tamano, datos } = req.body;
     if (!paciente_id || !nombre || !datos) {
