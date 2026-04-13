@@ -10,22 +10,22 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --teal-deep: #0B3B3C;
-  --teal: #1A6B6D;
-  --teal-light: #2A9D8F;
-  --gold: #C8A96E;
-  --gold-light: #E4D5B7;
-  --cream: #FAF7F2;
+  --teal-deep: #0A5E5E;
+  --teal: #1A9E9E;
+  --teal-light: #2DBFBF;
+  --gold: #4ABDAC;
+  --gold-light: #B8E8E0;
+  --cream: #F7FCFB;
   --white: #FFFFFF;
-  --gray-100: #F5F3EF;
-  --gray-200: #E8E4DD;
-  --gray-400: #A09A90;
-  --gray-600: #6B6560;
-  --gray-800: #3A3530;
-  --text: #2C2825;
-  --shadow-sm: 0 2px 8px rgba(11,59,60,0.06);
-  --shadow-md: 0 8px 30px rgba(11,59,60,0.10);
-  --shadow-lg: 0 20px 60px rgba(11,59,60,0.14);
+  --gray-100: #F0F7F6;
+  --gray-200: #DCE8E6;
+  --gray-400: #8FA8A4;
+  --gray-600: #5A7370;
+  --gray-800: #2D3E3C;
+  --text: #1E2D2B;
+  --shadow-sm: 0 2px 8px rgba(10,94,94,0.06);
+  --shadow-md: 0 8px 30px rgba(10,94,94,0.10);
+  --shadow-lg: 0 20px 60px rgba(10,94,94,0.14);
   --radius: 16px;
   --radius-sm: 10px;
   --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -186,16 +186,11 @@ h1, h2, h3, h4, h5 {
   gap: 12px;
   text-decoration: none;
 }
-.nav-logo-icon {
-  width: 44px;
+.nav-logo-img {
   height: 44px;
-  background: var(--teal);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: auto;
+  object-fit: contain;
 }
-.nav-logo-icon svg { width: 24px; height: 24px; }
 .nav-logo-text {
   font-family: 'Playfair Display', serif;
   font-size: 1.25rem;
@@ -1104,10 +1099,8 @@ h1, h2, h3, h4, h5 {
 <nav class="nav" id="nav">
   <div class="container nav-inner">
     <a href="#" class="nav-logo">
-      <div class="nav-logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
-      </div>
-      <div class="nav-logo-text">Dra. Samantha Andrade<span>Oftalmología Especializada</span></div>
+      <img src="logo.png" alt="Logo Dra. Samantha Andrade" class="nav-logo-img" onerror="this.style.display='none'" />
+      <div class="nav-logo-text">Dra. Samantha Andrade<span>Oftalmología | Alta Especialidad en Cirugía de Catarata</span></div>
     </a>
     <ul class="nav-links">
       <li><a href="#servicios">Servicios</a></li>
